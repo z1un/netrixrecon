@@ -194,8 +194,14 @@ func processDomain(domain string, flagDNS, flagAPI, flagBrute, flagLog, flagSile
 	domainSet := make(map[string]struct{})
 
 	if flagAPI || runAll {
-		modules := api.LoadEnabledAPIs(flagSilent)
+		modules := api.LoadEnabledAPIs()
 		for _, mod := range modules {
+			if mod.API == nil {
+				if !flagSilent {
+					utils.WarnPrintf("[%s] [WARN] %s: skipped (%s)\n", ts(), mod.Name, mod.Reason)
+				}
+				continue
+			}
 			if !flagSilent {
 				utils.InfoPrintf("[%s] [INFO] Processing %s API...\n", ts(), mod.Name)
 			}

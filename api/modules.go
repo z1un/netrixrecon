@@ -10,10 +10,9 @@ import (
 )
 
 type Module struct {
-	Name string
-	API  interface {
-		ExtractAssets(domain string) (domains, ips []string, err error)
-	}
+	Name   string
+	API    interface{ ExtractAssets(domain string) (domains, ips []string, err error) }
+	Reason string
 }
 
 func newHTTPClient() *http.Client {
@@ -36,33 +35,53 @@ func jsonDecodeError(statusCode int, body []byte, err error) error {
 	return fmt.Errorf("status %d, JSON decode failed: %v (body: %s)", statusCode, err, snippet)
 }
 
-func LoadEnabledAPIs(silent bool) []Module {
-	var modules []Module
+func LoadEnabledAPIs() []Module {
+	return []Module{
+		{Name: "FOFA", API: fofaAPI(), Reason: fofaReason()},
+		{Name: "DNSDUMPSTER", API: dnsdumpsterAPI(), Reason: dnsdumpsterReason()},
+		{Name: "VIRUSTOTAL", API: virustotalAPI(), Reason: virustotalReason()},
+		{Name: "CRTSH", API: NewCrtShAPI()},
+	}
+}
 
-	ts := utils.Timestamp
-
+func fofaAPI() interface{ ExtractAssets(domain string) (domains, ips []string, err error) } {
 	if key := utils.GetFOFAKey(); key != "" {
-		modules = append(modules, Module{"FOFA", NewFofaAPI(key)})
-	} else if !silent {
-		utils.WarnPrintf("[%s] [WARN] FOFA: skipped (FOFA_API_KEY not set)\n", ts())
+		return NewFofaAPI(key)
 	}
+	return nil
+}
 
+func fofaReason() string {
+	if utils.GetFOFAKey() == "" {
+		return "FOFA_API_KEY not set"
+	}
+	return ""
+}
+
+func dnsdumpsterAPI() interface{ ExtractAssets(domain string) (domains, ips []string, err error) } {
 	if key := utils.GetDNSDumpsterKey(); key != "" {
-		modules = append(modules, Module{"DNSDUMPSTER", NewDNSDumpsterAPI(key)})
-	} else if !silent {
-		utils.WarnPrintf("[%s] [WARN] DNSDUMPSTER: skipped (DNSDUMPSTER_API_KEY not set)\n", ts())
+		return NewDNSDumpsterAPI(key)
 	}
+	return nil
+}
 
+func dnsdumpsterReason() string {
+	if utils.GetDNSDumpsterKey() == "" {
+		return "DNSDUMPSTER_API_KEY not set"
+	}
+	return ""
+}
+
+func virustotalAPI() interface{ ExtractAssets(domain string) (domains, ips []string, err error) } {
 	if key := utils.GetVirusTotalKey(); key != "" {
-		modules = append(modules, Module{"VIRUSTOTAL", NewVirusTotalAPI(key)})
-	} else if !silent {
-		utils.WarnPrintf("[%s] [WARN] VIRUSTOTAL: skipped (VIRUSTOTAL_API_KEY not set)\n", ts())
+		return NewVirusTotalAPI(key)
 	}
+	return nil
+}
 
-	if !silent {
-		utils.InfoPrintf("[%s] [INFO] CRTSH: enabled (no API key required)\n", ts())
+func virustotalReason() string {
+	if utils.GetVirusTotalKey() == "" {
+		return "VIRUSTOTAL_API_KEY not set"
 	}
-	modules = append(modules, Module{"CRTSH", NewCrtShAPI()})
-
-	return modules
+	return ""
 }
