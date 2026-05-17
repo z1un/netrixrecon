@@ -39,6 +39,7 @@ jobs:
       - name: Show log and fail
         if: steps.release.outcome == 'failure'
         run: |
-          echo "=== GoReleaser Error ==="
-          cat /tmp/goreleaser.log
+          while IFS= read -r line; do
+            echo "::error::$line"
+          done < /tmp/goreleaser.log
           exit 1
