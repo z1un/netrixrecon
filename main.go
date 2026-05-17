@@ -14,9 +14,9 @@ import (
 	"github.com/z1un/netrixrecon/utils"
 )
 
-func main() {
-	const version = "20260517"
+var version = "20260517"
 
+func main() {
 var (
 		flagDNS    bool
 		flagAPI    bool
