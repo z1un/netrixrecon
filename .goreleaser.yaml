@@ -15,8 +15,6 @@ builds:
       - amd64
       - arm
       - arm64
-    goarm:
-      - 7
     ignore:
       - goos: darwin
         goarch: 386
@@ -28,11 +26,10 @@ archives:
   - formats: zip
     files:
       - LICENSE
-    name_template: >-
-      {{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}
-      {{- if eq .Arch "arm" }}{{ .Arm }}{{ end }}
 checksum:
   name_template: "checksums.txt"
+release:
+  mode: replace
 changelog:
   sort: asc
   filters:

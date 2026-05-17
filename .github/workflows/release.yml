@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 jobs:
-  debug:
+  goreleaser:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -22,19 +22,10 @@ jobs:
         with:
           go-version: "1.26"
 
-      - name: Go version
-        run: go version
-
-      - name: Download GoReleaser
+      - name: Run GoReleaser
         run: |
           curl -sL "https://github.com/goreleaser/goreleaser/releases/download/v2.15.4/goreleaser_Linux_x86_64.tar.gz" -o /tmp/goreleaser.tar.gz
           tar -xzf /tmp/goreleaser.tar.gz -C /usr/local/bin goreleaser
-          goreleaser --version
-
-      - name: GoReleaser build
-        run: goreleaser build --clean
-
-      - name: GoReleaser release
-        run: goreleaser release --clean 2>&1
+          goreleaser release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
