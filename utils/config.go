@@ -20,5 +20,5 @@ func GetFOFAQuery() string {
 	if q := os.Getenv("FOFA_QUERY"); q != "" {
 		return q
 	}
-	return `(domain="%s" || host="%s" || cert="%s" || banner="%s" || title="%s")`
+	return `domain="%s" || host="%s" || cert="%s"`
 }

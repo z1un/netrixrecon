@@ -64,7 +64,7 @@ export VIRUSTOTAL_API_KEY="your_key"
 | `DNSDUMPSTER_API_KEY` | [dnsdumpster.com](https://dnsdumpster.com) |
 | `VIRUSTOTAL_API_KEY` | [virustotal.com](https://virustotal.com) |
 
-FOFA search can be customized via `FOFA_QUERY` (default: ``(domain="%s" || host="%s" || cert="%s" || banner="%s" || title="%s")``). `%s` is replaced with the target domain.
+FOFA search can be customized via `FOFA_QUERY` (default: ``domain="%s" || host="%s" || cert="%s"``). `%s` is replaced with the target domain.
 
 ```bash
 export FOFA_QUERY='(domain="%s" || host="%s")'
