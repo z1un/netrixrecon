@@ -25,16 +25,16 @@ func GetWhoisInfo(domain string) {
 		d := result.Domain
 		fmt.Println("Domain")
 		if d.Domain != "" {
-			fmt.Printf("Domain:       %s\n", d.Domain)
+			fmt.Printf("Domain: %s\n", d.Domain)
 		}
 		if len(d.Status) > 0 {
-			fmt.Printf("Status:       %s\n", strings.Join(d.Status, ", "))
+			fmt.Printf("Status: %s\n", strings.Join(d.Status, ", "))
 		}
 		if len(d.NameServers) > 0 {
 			fmt.Printf("Name Servers: %s\n", strings.Join(d.NameServers, ", "))
 		}
 		if d.DNSSec {
-			fmt.Println("DNSSEC:       yes")
+			fmt.Println("DNSSEC: yes")
 		}
 		if d.WhoisServer != "" {
 			fmt.Printf("Whois Server: %s\n", d.WhoisServer)
@@ -42,10 +42,10 @@ func GetWhoisInfo(domain string) {
 
 		fmt.Println("\nDates")
 		if d.CreatedDate != "" {
-			fmt.Printf("Created:    %s\n", d.CreatedDate)
+			fmt.Printf("Created: %s\n", d.CreatedDate)
 		}
 		if d.UpdatedDate != "" {
-			fmt.Printf("Updated:    %s\n", d.UpdatedDate)
+			fmt.Printf("Updated: %s\n", d.UpdatedDate)
 		}
 		if d.ExpirationDate != "" {
 			fmt.Printf("Expiration: %s\n", d.ExpirationDate)
@@ -80,33 +80,33 @@ func GetWhoisInfo(domain string) {
 
 func printContact(c *whoisparser.Contact, showAddress bool) {
 	if c.ID != "" {
-		fmt.Printf("ID:       %s\n", c.ID)
+		fmt.Printf("ID: %s\n", c.ID)
 	}
 	if c.Name != "" {
-		fmt.Printf("Name:     %s\n", c.Name)
+		fmt.Printf("Name: %s\n", c.Name)
 	}
 	if c.Organization != "" {
-		fmt.Printf("Org:      %s\n", c.Organization)
+		fmt.Printf("Org: %s\n", c.Organization)
 	}
 	if c.Email != "" {
-		fmt.Printf("Email:    %s\n", c.Email)
+		fmt.Printf("Email: %s\n", c.Email)
 	}
 	if c.Phone != "" {
 		s := c.Phone
 		if c.PhoneExt != "" {
 			s += " ext " + c.PhoneExt
 		}
-		fmt.Printf("Phone:    %s\n", s)
+		fmt.Printf("Phone: %s\n", s)
 	}
 	if c.Fax != "" {
 		s := c.Fax
 		if c.FaxExt != "" {
 			s += " ext " + c.FaxExt
 		}
-		fmt.Printf("Fax:      %s\n", s)
+		fmt.Printf("Fax: %s\n", s)
 	}
 	if c.ReferralURL != "" {
-		fmt.Printf("URL:      %s\n", c.ReferralURL)
+		fmt.Printf("URL: %s\n", c.ReferralURL)
 	}
 	if showAddress {
 		var parts []string
@@ -126,7 +126,7 @@ func printContact(c *whoisparser.Contact, showAddress bool) {
 			parts = append(parts, c.Country)
 		}
 		if len(parts) > 0 {
-			fmt.Printf("Address:  %s\n", strings.Join(parts, ", "))
+			fmt.Printf("Address: %s\n", strings.Join(parts, ", "))
 		}
 	}
 }

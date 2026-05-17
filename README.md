@@ -5,7 +5,7 @@ Domain reconnaissance and asset collection tool.
 ## Install
 
 ```bash
-go install github.com/z1un/netrixrecon@latest
+go install -v github.com/z1un/netrixrecon@latest
 ```
 
 Or build from source:
