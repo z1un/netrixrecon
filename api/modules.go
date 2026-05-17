@@ -38,10 +38,10 @@ func jsonDecodeError(statusCode int, body []byte, err error) error {
 func LoadEnabledAPIs() []Module {
 	return []Module{
 		{Name: "FOFA", API: fofaAPI(), Reason: fofaReason()},
+		{Name: "SHODAN", API: shodanAPI(), Reason: shodanReason()},
 		{Name: "DNSDUMPSTER", API: dnsdumpsterAPI(), Reason: dnsdumpsterReason()},
 		{Name: "VIRUSTOTAL", API: virustotalAPI(), Reason: virustotalReason()},
 		{Name: "CRTSH", API: NewCrtShAPI()},
-		{Name: "SHODAN", API: shodanAPI(), Reason: shodanReason()},
 	}
 }
 

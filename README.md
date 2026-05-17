@@ -20,9 +20,10 @@ go build -o netrixrecon .
 
 ```
 netrixrecon example.com                  # run API discovery + subdomain bruteforce
-netrixrecon -dns example.com             # DNS info only
-netrixrecon -api example.com             # API discovery only
-netrixrecon -brute example.com           # subdomain bruteforce only
+netrixrecon --whois example.com          # WHOIS lookup
+netrixrecon --dns example.com            # DNS info only
+netrixrecon --api example.com            # API discovery only
+netrixrecon --brute example.com          # subdomain bruteforce only
 netrixrecon example.com -s -o out.txt    # silent mode, export to file
 netrixrecon example.com -w dict/subdomainlist.txt -t 100   # custom wordlist and threads
 netrixrecon example.com -n 8.8.8.8,1.1.1.1                 # custom DNS servers (:53 auto-added)
@@ -34,10 +35,11 @@ echo example.com | netrixrecon           # pipe input
 ```
 Usage: netrixrecon [flags] <domain> [options]
 
-Actions (appear before domain, accept -- or - prefix):
-  -dns         Run DNS information collection (A, AAAA, NS, MX, SOA, TXT, AXFR)
-  -api         Run API asset discovery (FOFA, DNSDumpster, VirusTotal, crt.sh, Shodan)
-  -brute       Run subdomain bruteforce
+Actions (appear before domain, accept -- prefix):
+  --whois       Lookup WHOIS information
+  --dns         Run DNS information collection (A, AAAA, NS, MX, SOA, TXT, AXFR)
+  --api         Run API asset discovery (FOFA, Shodan, DNSDumpster, VirusTotal, crt.sh)
+  --brute       Run subdomain bruteforce
 
 Options (appear after domain):
   -v, --version     Print version and exit

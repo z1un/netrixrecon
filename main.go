@@ -21,6 +21,7 @@ var (
 		flagDNS    bool
 		flagAPI    bool
 		flagBrute  bool
+		flagWhois  bool
 		flagLog    bool
 		flagSilent bool
 		flagVersion bool
@@ -35,6 +36,7 @@ var (
 	flag.BoolVar(&flagBrute, "brute", false, "Run subdomain bruteforce")
 	flag.BoolVar(&flagLog, "log", false, "Write results to log file")
 	flag.BoolVar(&flagSilent, "silent", false, "Only output aggregated assets without formatting")
+	flag.BoolVar(&flagWhois, "whois", false, "Lookup WHOIS information")
 	flag.StringVar(&wordlist, "w", "dict/subdomainlist.txt", "Subdomain wordlist path")
 	flag.StringVar(&nsFlag, "ns", "8.8.8.8:53,1.1.1.1:53", "DNS servers (comma separated)")
 	flag.BoolVar(&flagVersion, "v", false, "Print version and exit")
@@ -45,10 +47,11 @@ var (
 	flag.CommandLine.Usage = func() {
 		fmt.Println(`Usage: netrixrecon [flags] <domain> [options]
 
-Actions (appear before domain, accept -- or - prefix):
-  -dns         Run DNS information collection (A, AAAA, NS, MX, SOA, TXT, AXFR)
-  -api         Run API asset discovery (FOFA, DNSDumpster, VirusTotal, crt.sh, Shodan)
-  -brute       Run subdomain bruteforce
+Actions (appear before domain, accept -- prefix):
+  --whois       Lookup WHOIS information
+  --dns         Run DNS information collection (A, AAAA, NS, MX, SOA, TXT, AXFR)
+  --api         Run API asset discovery (FOFA, Shodan, DNSDumpster, VirusTotal, crt.sh)
+  --brute       Run subdomain bruteforce
 
 Options (appear after domain):
   -v, --version     Print version and exit
@@ -61,7 +64,7 @@ Options (appear after domain):
 
 Examples:
   ./netrixrecon example.com
-  ./netrixrecon -dns example.com
+  ./netrixrecon --dns example.com
   ./netrixrecon example.com -s -o results.txt
   echo example.com | ./netrixrecon`)
 	}
@@ -73,7 +76,7 @@ Examples:
 		os.Exit(0)
 	}
 
-	parseFlagsFromArgs(&flagDNS, &flagAPI, &flagBrute, &flagLog, &flagSilent, &threads, &outFile, &wordlist, &nsFlag)
+	parseFlagsFromArgs(&flagDNS, &flagAPI, &flagBrute, &flagWhois, &flagLog, &flagSilent, &threads, &outFile, &wordlist, &nsFlag)
 
 	servers := strings.Split(nsFlag, ",")
 	for i := range servers {
@@ -114,7 +117,7 @@ Examples:
 	var allResults []resultSet
 
 	for _, domain := range domains {
-		rs := processDomain(domain, flagDNS, flagAPI, flagBrute, flagLog, flagSilent, wordlist, servers, threads)
+		rs := processDomain(domain, flagDNS, flagAPI, flagBrute, flagWhois, flagLog, flagSilent, wordlist, servers, threads)
 		allResults = append(allResults, rs)
 	}
 
@@ -149,7 +152,7 @@ type resultSet struct {
 	ips     []string
 }
 
-func parseFlagsFromArgs(flagDNS, flagAPI, flagBrute, flagLog, flagSilent *bool, threads *int, outFile, wordlist, nsFlag *string) {
+func parseFlagsFromArgs(flagDNS, flagAPI, flagBrute, flagWhois, flagLog, flagSilent *bool, threads *int, outFile, wordlist, nsFlag *string) {
 	args := flag.Args()
 	if len(args) < 2 {
 		return
@@ -158,12 +161,14 @@ func parseFlagsFromArgs(flagDNS, flagAPI, flagBrute, flagLog, flagSilent *bool, 
 	for i := 0; i < len(remaining); i++ {
 		arg := remaining[i]
 		switch arg {
-		case "--dns", "-dns":
+		case "--dns":
 			*flagDNS = true
-		case "--api", "-api":
+		case "--api":
 			*flagAPI = true
-		case "--brute", "-brute":
+		case "--brute":
 			*flagBrute = true
+		case "--whois":
+			*flagWhois = true
 		case "--log", "-log", "-l":
 			*flagLog = true
 		case "--silent", "-silent", "-s":
@@ -195,12 +200,17 @@ func parseFlagsFromArgs(flagDNS, flagAPI, flagBrute, flagLog, flagSilent *bool, 
 	}
 }
 
-func processDomain(domain string, flagDNS, flagAPI, flagBrute, flagLog, flagSilent bool, wordlist string, servers []string, threads int) resultSet {
+func processDomain(domain string, flagDNS, flagAPI, flagBrute, flagWhois, flagLog, flagSilent bool, wordlist string, servers []string, threads int) resultSet {
 	timestamp := time.Now().Format("20060102_150405")
 	ts := utils.Timestamp
 
 	if flagDNS {
 		core.GetDomainInfo(domain, servers)
+		return resultSet{}
+	}
+
+	if flagWhois {
+		core.GetWhoisInfo(domain)
 		return resultSet{}
 	}
 
