@@ -57,6 +57,7 @@ Set these environment variables to enable API-based asset discovery:
 export FOFA_API_KEY="your_key"
 export DNSDUMPSTER_API_KEY="your_key"
 export VIRUSTOTAL_API_KEY="your_key"
+export SHODAN_API_KEY="your_key"
 ```
 
 | Variable | Source |
@@ -64,6 +65,7 @@ export VIRUSTOTAL_API_KEY="your_key"
 | `FOFA_API_KEY` | [fofa.info](https://fofa.info) |
 | `DNSDUMPSTER_API_KEY` | [dnsdumpster.com](https://dnsdumpster.com) |
 | `VIRUSTOTAL_API_KEY` | [virustotal.com](https://virustotal.com) |
+| `SHODAN_API_KEY` | [shodan.io](https://shodan.io) |
 
 FOFA search can be customized via `FOFA_QUERY` (default: ``domain="%s" || host="%s" || cert="%s"``). `%s` is replaced with the target domain.
 

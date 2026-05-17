@@ -41,6 +41,7 @@ func LoadEnabledAPIs() []Module {
 		{Name: "DNSDUMPSTER", API: dnsdumpsterAPI(), Reason: dnsdumpsterReason()},
 		{Name: "VIRUSTOTAL", API: virustotalAPI(), Reason: virustotalReason()},
 		{Name: "CRTSH", API: NewCrtShAPI()},
+		{Name: "SHODAN", API: shodanAPI(), Reason: shodanReason()},
 	}
 }
 
@@ -82,6 +83,20 @@ func virustotalAPI() interface{ ExtractAssets(domain string) (domains, ips []str
 func virustotalReason() string {
 	if utils.GetVirusTotalKey() == "" {
 		return "VIRUSTOTAL_API_KEY not set"
+	}
+	return ""
+}
+
+func shodanAPI() interface{ ExtractAssets(domain string) (domains, ips []string, err error) } {
+	if key := utils.GetShodanKey(); key != "" {
+		return NewShodanAPI(key)
+	}
+	return nil
+}
+
+func shodanReason() string {
+	if utils.GetShodanKey() == "" {
+		return "SHODAN_API_KEY not set"
 	}
 	return ""
 }
