@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/miekg/dns"
+	"github.com/schollz/progressbar/v3"
 
 	"github.com/z1un/netrixrecon/utils"
 )
@@ -160,35 +161,15 @@ func (b *SubdomainBruter) Brute(silent bool) map[string]string {
 	jobs := make(chan string, b.threads)
 	var wg sync.WaitGroup
 
-	var lastReported atomic.Int64
-	progressDone := make(chan struct{})
+	var bar *progressbar.ProgressBar
 	if !silent && total > 0 {
-		go func() {
-			for {
-				c := checked.Load()
-				if c >= int64(total) {
-					if c > 0 {
-						mu.Lock()
-						n := len(results)
-						mu.Unlock()
-						utils.InfoPrintf("\r  [*] Progress: %5d/%-5d - Found %d subs\n", c, total, n)
-					}
-					close(progressDone)
-					return
-				}
-				lr := lastReported.Load()
-				if c > 0 && c-lr >= 50 {
-					lastReported.Store(c)
-					mu.Lock()
-					n := len(results)
-					mu.Unlock()
-					utils.InfoPrintf("\r  [*] Progress: %5d/%-5d - Found %d subs", c, total, n)
-				}
-				time.Sleep(100 * time.Millisecond)
-			}
-		}()
-	} else {
-		close(progressDone)
+		bar = progressbar.NewOptions(total,
+			progressbar.OptionSetWriter(os.Stderr),
+			progressbar.OptionSetDescription(fmt.Sprintf("  [*] Brute forcing (found %d)", 0)),
+			progressbar.OptionShowCount(),
+			progressbar.OptionEnableColorCodes(true),
+			progressbar.OptionThrottle(100*time.Millisecond),
+		)
 	}
 
 	for i := 0; i < b.threads; i++ {
@@ -202,13 +183,23 @@ func (b *SubdomainBruter) Brute(silent bool) map[string]string {
 					ip := ips[0]
 					if isWildcard && isWildcardMatch(ip, wildcardIPs) {
 						checked.Add(1)
+						if bar != nil {
+							bar.Add(1)
+						}
 						continue
 					}
 					mu.Lock()
 					results[fullDomain] = ip
+					n := len(results)
 					mu.Unlock()
+					if bar != nil {
+						bar.Describe(fmt.Sprintf("  [*] Brute forcing (found %d)", n))
+					}
 				}
 				checked.Add(1)
+				if bar != nil {
+					bar.Add(1)
+				}
 			}
 		}()
 	}
@@ -219,7 +210,10 @@ func (b *SubdomainBruter) Brute(silent bool) map[string]string {
 	close(jobs)
 	wg.Wait()
 
-	<-progressDone
+	if bar != nil {
+		bar.Clear()
+		bar.Finish()
+	}
 
 	elapsed := time.Since(start)
 	if !silent {
