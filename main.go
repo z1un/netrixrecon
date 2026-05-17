@@ -51,13 +51,13 @@ Actions (appear before domain, accept -- or - prefix):
   -brute       Run subdomain bruteforce
 
 Options (appear after domain):
-  -v, --version  Print version and exit
-  -l           Write log file to output/
-  -s           Silent mode, machine-friendly output (domain/IP list only)
-  -w <file>    Wordlist path (default: dict/subdomainlist.txt)
-  -n <str>     DNS servers, comma separated (default: 8.8.8.8:53,1.1.1.1:53)
-  -t <num>     Bruteforce threads (default: 200)
-  -o <file>    Export deduplicated assets to file
+  -v, --version     Print version and exit
+  -l, --log         Write log file to output/
+  -s, --silent      Silent mode, machine-friendly output (domain/IP list only)
+  -w, --wordlist <file>   Wordlist path (default: dict/subdomainlist.txt)
+  -n, --ns <str>    DNS servers, comma separated (default: 8.8.8.8:53,1.1.1.1:53)
+  -t, --threads <num>     Bruteforce threads (default: 200)
+  -o, --output <file>     Export deduplicated assets to file
 
 Examples:
   ./netrixrecon example.com
