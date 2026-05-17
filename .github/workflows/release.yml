@@ -33,3 +33,8 @@ jobs:
 
       - name: GoReleaser build
         run: goreleaser build --clean
+
+      - name: GoReleaser release
+        run: goreleaser release --clean 2>&1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
