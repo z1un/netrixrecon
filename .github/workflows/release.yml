@@ -36,10 +36,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Show log and fail
+      - name: Upload goreleaser log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: goreleaser-log
+          path: /tmp/goreleaser.log
+
+      - name: Check result
         if: steps.release.outcome == 'failure'
-        run: |
-          while IFS= read -r line; do
-            echo "::error::$line"
-          done < /tmp/goreleaser.log
-          exit 1
+        run: exit 1
