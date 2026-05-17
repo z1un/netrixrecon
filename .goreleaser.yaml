@@ -1,8 +1,7 @@
 version: 2
 
 before:
-  hooks:
-    - go mod tidy
+  hooks: []
 
 builds:
   - env:
@@ -35,6 +34,9 @@ archives:
         formats: zip
     files:
       - LICENSE
+    name_template: >-
+      {{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}
+      {{- if eq .Arch "arm" }}{{ .Arm }}{{ end }}
 
 checksum:
   name_template: "checksums.txt"
