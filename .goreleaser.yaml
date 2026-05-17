@@ -32,6 +32,7 @@ archives:
         formats: zip
     files:
       - LICENSE
+      - dict/**/*
     name_template: >-
       {{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}
       {{- if eq .Arch "arm" }}{{ .Arm }}{{ end }}
