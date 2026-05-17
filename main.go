@@ -47,7 +47,7 @@ var (
 
 Actions (appear before domain, accept -- or - prefix):
   -dns         Run DNS information collection (A, AAAA, NS, MX, SOA, TXT, AXFR)
-  -api         Run API asset discovery (FOFA, DNSDumpster, VirusTotal, crt.sh)
+  -api         Run API asset discovery (FOFA, DNSDumpster, VirusTotal, crt.sh, Shodan)
   -brute       Run subdomain bruteforce
 
 Options (appear after domain):
