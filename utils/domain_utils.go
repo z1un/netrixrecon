@@ -1,6 +1,9 @@
 package utils
 
-import "regexp"
+import (
+	"regexp"
+	"strings"
+)
 
 var (
 	reLeadingNum = regexp.MustCompile(`^\d+\s+`)
@@ -14,7 +17,16 @@ func IsValidDomain(host string) bool {
 		return false
 	}
 	cleaned := reLeadingNum.ReplaceAllString(host, "")
-	return reDomain.MatchString(cleaned)
+	if !reDomain.MatchString(cleaned) {
+		return false
+	}
+	if !strings.Contains(cleaned, ".") {
+		return false
+	}
+	if cleaned[0] == '.' || cleaned[0] == '-' || cleaned[len(cleaned)-1] == '.' || cleaned[len(cleaned)-1] == '-' {
+		return false
+	}
+	return true
 }
 
 func findColon(s string) int {

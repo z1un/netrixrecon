@@ -15,12 +15,15 @@ import (
 )
 
 func main() {
-	var (
+	const version = "20260517"
+
+var (
 		flagDNS    bool
 		flagAPI    bool
 		flagBrute  bool
 		flagLog    bool
 		flagSilent bool
+		flagVersion bool
 		wordlist   string
 		nsFlag     string
 		threads    int
@@ -34,6 +37,8 @@ func main() {
 	flag.BoolVar(&flagSilent, "silent", false, "Only output aggregated assets without formatting")
 	flag.StringVar(&wordlist, "w", "dict/subdomainlist.txt", "Subdomain wordlist path")
 	flag.StringVar(&nsFlag, "ns", "8.8.8.8:53,1.1.1.1:53", "DNS servers (comma separated)")
+	flag.BoolVar(&flagVersion, "v", false, "Print version and exit")
+	flag.BoolVar(&flagVersion, "version", false, "Print version and exit")
 	flag.IntVar(&threads, "t", 200, "Subdomain bruteforce threads")
 	flag.StringVar(&outFile, "o", "", "Output deduplicated assets to file")
 
@@ -46,6 +51,7 @@ Actions (appear before domain, accept -- or - prefix):
   -brute       Run subdomain bruteforce
 
 Options (appear after domain):
+  -v, --version  Print version and exit
   -l           Write log file to output/
   -s           Silent mode, machine-friendly output (domain/IP list only)
   -w <file>    Wordlist path (default: dict/subdomainlist.txt)
@@ -62,6 +68,11 @@ Examples:
 
 	flag.Parse()
 
+	if flagVersion {
+		fmt.Println("netrixrecon version", version)
+		os.Exit(0)
+	}
+
 	parseFlagsFromArgs(&flagDNS, &flagAPI, &flagBrute, &flagLog, &flagSilent, &threads, &outFile, &wordlist, &nsFlag)
 
 	servers := strings.Split(nsFlag, ",")
@@ -74,7 +85,13 @@ Examples:
 
 	var domains []string
 	if flag.NArg() > 0 {
-		domains = append(domains, flag.Arg(0))
+		d := flag.Arg(0)
+		if !utils.IsValidDomain(d) {
+			fmt.Fprintf(os.Stderr, "error: invalid domain: %s\n\n", d)
+			flag.CommandLine.Usage()
+			os.Exit(1)
+		}
+		domains = append(domains, d)
 	}
 
 	if len(domains) == 0 {
