@@ -28,21 +28,6 @@ jobs:
           tar -xzf /tmp/goreleaser.tar.gz -C /usr/local/bin goreleaser
 
       - name: Run GoReleaser
-        id: release
-        continue-on-error: true
-        run: |
-          set -o pipefail
-          goreleaser release --clean --verbose 2>&1 | tee /tmp/goreleaser.log
+        run: goreleaser release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload goreleaser log
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: goreleaser-log
-          path: /tmp/goreleaser.log
-
-      - name: Check result
-        if: steps.release.outcome == 'failure'
-        run: exit 1
