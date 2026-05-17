@@ -30,20 +30,15 @@ jobs:
       - name: Run GoReleaser
         id: release
         continue-on-error: true
-        run: goreleaser release --clean --verbose 2>&1 | tee /tmp/goreleaser.log
+        run: |
+          set -o pipefail
+          goreleaser release --clean --verbose 2>&1 | tee /tmp/goreleaser.log
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload log
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: goreleaser-log
-          path: /tmp/goreleaser.log
-
-      - name: Fail if needed
+      - name: Show log and fail
         if: steps.release.outcome == 'failure'
         run: |
-          echo "=== GoReleaser output ==="
+          echo "=== GoReleaser Error ==="
           cat /tmp/goreleaser.log
           exit 1
