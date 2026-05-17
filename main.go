@@ -67,10 +67,10 @@ Options (appear after domain):
   -o, --output <file>     Export deduplicated assets to file
 
 Examples:
-  ./netrixrecon example.com
-  ./netrixrecon --dns example.com
-  ./netrixrecon example.com -s -o results.txt
-  echo example.com | ./netrixrecon`)
+  netrixrecon example.com
+  netrixrecon --dns example.com
+  netrixrecon example.com -s -o results.txt
+  echo example.com | netrixrecon`)
 	}
 
 	flag.Parse()
