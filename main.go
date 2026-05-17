@@ -41,7 +41,7 @@ var (
 	flag.BoolVar(&flagLog, "log", false, "Write results to log file")
 	flag.BoolVar(&flagSilent, "silent", false, "Only output aggregated assets without formatting")
 	flag.BoolVar(&flagWhois, "whois", false, "Lookup WHOIS information")
-	flag.StringVar(&wordlist, "w", "dict/subdomainlist.txt", "Subdomain wordlist path")
+	flag.StringVar(&wordlist, "w", "dict/subdomainlist.txt", "Subdomain wordlist path (built-in)")
 	flag.StringVar(&nsFlag, "ns", "8.8.8.8:53,1.1.1.1:53", "DNS servers (comma separated)")
 	flag.BoolVar(&flagVersion, "v", false, "Print version and exit")
 	flag.BoolVar(&flagVersion, "version", false, "Print version and exit")
@@ -61,7 +61,7 @@ Options (appear after domain):
   -v, --version     Print version and exit
   -l, --log         Write log file to output/
   -s, --silent      Silent mode, machine-friendly output (domain/IP list only)
-  -w, --wordlist <file>   Wordlist path (default: dict/subdomainlist.txt)
+  -w, --wordlist <file>   Wordlist path (default: built-in)
   -n, --ns <str>    DNS servers, comma separated (default: 8.8.8.8:53,1.1.1.1:53)
   -t, --threads <num>     Bruteforce threads (default: 200)
   -o, --output <file>     Export deduplicated assets to file
