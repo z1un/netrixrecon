@@ -25,7 +25,7 @@ netrixrecon --dns example.com            # DNS info only
 netrixrecon --api example.com            # API discovery only
 netrixrecon --brute example.com          # subdomain bruteforce only
 netrixrecon example.com -s -o out.txt    # silent mode, export to file
-netrixrecon example.com -w dict/subdomainlist.txt -t 100   # custom wordlist and threads
+netrixrecon example.com -w mywordlist.txt -t 100           # custom wordlist and threads
 netrixrecon example.com -n 8.8.8.8,1.1.1.1                 # custom DNS servers (:53 auto-added)
 echo example.com | netrixrecon           # pipe input
 ```
@@ -45,7 +45,7 @@ Options (appear after domain):
   -v, --version     Print version and exit
   -l, --log         Write log file to output/
   -s, --silent      Silent mode, machine-friendly output (domain/IP list only)
-  -w, --wordlist <file>   Wordlist path (default: dict/subdomainlist.txt)
+  -w, --wordlist <file>   Wordlist path (default: built-in)
   -n, --ns <str>    DNS servers, comma separated (default: 8.8.8.8:53,1.1.1.1:53)
   -t, --threads <num>     Bruteforce threads (default: 200)
   -o, --output <file>     Export deduplicated assets to file
