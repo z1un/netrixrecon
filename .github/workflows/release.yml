@@ -20,25 +20,14 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: "1.26"
-
-      - name: Test Go build
-        run: go build -v ./... 2>&1
+          go-version: stable
 
       - name: Download GoReleaser
         run: |
           curl -sL "https://github.com/goreleaser/goreleaser/releases/download/v2.15.4/goreleaser_Linux_x86_64.tar.gz" -o /tmp/goreleaser.tar.gz
           tar -xzf /tmp/goreleaser.tar.gz -C /usr/local/bin goreleaser
-          goreleaser --version
 
       - name: Run GoReleaser
-        run: goreleaser release --clean --verbose 2>&1 | tee /tmp/goreleaser.log
+        run: goreleaser release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload logs
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: goreleaser-logs
-          path: /tmp/goreleaser.log
