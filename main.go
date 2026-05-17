@@ -14,7 +14,7 @@ import (
 	"github.com/z1un/netrixrecon/utils"
 )
 
-var version = "v2026.5.17"
+var version = "2026.5.17"
 
 func main() {
 var (
