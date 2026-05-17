@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	_ "embed"
 	"flag"
 	"fmt"
 	"os"
@@ -13,6 +14,9 @@ import (
 	"github.com/z1un/netrixrecon/core"
 	"github.com/z1un/netrixrecon/utils"
 )
+
+//go:embed dict/subdomainlist.txt
+var defaultWordlist string
 
 var version = "2026.5.17"
 
@@ -253,7 +257,7 @@ func processDomain(domain string, flagDNS, flagAPI, flagBrute, flagWhois, flagLo
 		if !flagSilent {
 			utils.InfoPrintf("[%s] [INFO] Processing SubDomain Bruteforce...\n", ts())
 		}
-		bruter := core.NewSubdomainBruter(domain, wordlist, threads, servers)
+		bruter := core.NewSubdomainBruter(domain, wordlist, defaultWordlist, threads, servers)
 		results := bruter.Brute(flagSilent)
 		var subdomains, subIPs []string
 		for sub, ip := range results {

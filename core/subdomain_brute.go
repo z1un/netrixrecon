@@ -23,13 +23,14 @@ func randInt(max int64) int64 {
 }
 
 type SubdomainBruter struct {
-	domain   string
-	wordlist string
-	threads  int
-	servers  []string
+	domain         string
+	wordlist       string
+	defaultWordlist string
+	threads        int
+	servers        []string
 }
 
-func NewSubdomainBruter(domain, wordlist string, threads int, servers []string) *SubdomainBruter {
+func NewSubdomainBruter(domain, wordlist, defaultWordlist string, threads int, servers []string) *SubdomainBruter {
 	if threads <= 0 {
 		threads = utils.DefaultThreads
 	}
@@ -37,10 +38,11 @@ func NewSubdomainBruter(domain, wordlist string, threads int, servers []string) 
 		servers = utils.DefaultNameservers
 	}
 	return &SubdomainBruter{
-		domain:   domain,
-		wordlist: wordlist,
-		threads:  threads,
-		servers:  servers,
+		domain:         domain,
+		wordlist:       wordlist,
+		defaultWordlist: defaultWordlist,
+		threads:        threads,
+		servers:        servers,
 	}
 }
 
@@ -76,6 +78,10 @@ func (b *SubdomainBruter) loadWordlist() ([]string, error) {
 		if err2 == nil {
 			altPath := filepath.Join(filepath.Dir(exe), b.wordlist)
 			data, err = os.ReadFile(altPath)
+		}
+		if err != nil && b.defaultWordlist != "" {
+			data = []byte(b.defaultWordlist)
+			err = nil
 		}
 		if err != nil {
 			return nil, err
