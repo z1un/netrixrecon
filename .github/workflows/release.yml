@@ -23,25 +23,9 @@ jobs:
           go-version: stable
 
       - name: Run GoReleaser
-        id: goreleaser
-        continue-on-error: true
         run: |
           curl -sL "https://github.com/goreleaser/goreleaser/releases/download/v2.15.4/goreleaser_Linux_x86_64.tar.gz" -o /tmp/goreleaser.tar.gz
           tar -xzf /tmp/goreleaser.tar.gz -C /usr/local/bin goreleaser
-          goreleaser release --clean 2>&1 | tee /tmp/goreleaser.log
+          goreleaser release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload logs on failure
-        if: steps.goreleaser.outcome == 'failure'
-        uses: actions/upload-artifact@v4
-        with:
-          name: goreleaser-logs
-          path: /tmp/goreleaser.log
-
-      - name: Fail if build failed
-        if: steps.goreleaser.outcome == 'failure'
-        run: |
-          echo "=== GoReleaser output ==="
-          cat /tmp/goreleaser.log
-          exit 1
