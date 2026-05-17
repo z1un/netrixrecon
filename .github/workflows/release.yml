@@ -22,16 +22,28 @@ jobs:
         with:
           go-version: stable
 
-      - name: Delete existing release
-        run: |
-          gh release delete v2026.5.17 --cleanup-tag --yes 2>/dev/null || true
-
       - name: Download GoReleaser
         run: |
           curl -sL "https://github.com/goreleaser/goreleaser/releases/download/v2.15.4/goreleaser_Linux_x86_64.tar.gz" -o /tmp/goreleaser.tar.gz
           tar -xzf /tmp/goreleaser.tar.gz -C /usr/local/bin goreleaser
 
       - name: Run GoReleaser
-        run: goreleaser release --clean
+        id: release
+        continue-on-error: true
+        run: goreleaser release --clean --verbose 2>&1 | tee /tmp/goreleaser.log
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: goreleaser-log
+          path: /tmp/goreleaser.log
+
+      - name: Fail if needed
+        if: steps.release.outcome == 'failure'
+        run: |
+          echo "=== GoReleaser output ==="
+          cat /tmp/goreleaser.log
+          exit 1
